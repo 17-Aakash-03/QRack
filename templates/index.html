@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QRack</title>
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="QRack">
+  <script src="/static/jsqr.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      font-size: 15px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 10px rgba(79, 70, 229, 0.3);
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    header span {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-left: auto;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .main {
+      padding: 16px;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+      border: 1px solid #f0f0f0;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #4f46e5;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+      margin-left: 6px;
+    }
+
+    /* Active sheet indicator */
+    .sheet-indicator {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .sheet-indicator.show {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sheet-indicator span {
+      font-size: 13px;
+      color: #16a34a;
+      font-weight: 600;
+    }
+
+    .sheet-indicator small {
+      font-size: 12px;
+      color: #6b7280;
+      margin-left: auto;
+    }
+
+    .sheet-clear {
+      background: none;
+      border: none;
+      color: #dc2626;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0 4px;
+    }
+
+    /* Step badges */
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      background: #4f46e5;
+      color: white;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-badge.done {
+      background: #16a34a;
+    }
+
+    .mode-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      background: #f3f4f6;
+      border-radius: 10px;
+      padding: 4px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 9px 8px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      font-size: 13px;
+      cursor: pointer;
+      color: #6b7280;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .mode-btn.active {
+      background: white;
+      color: #4f46e5;
+      font-weight: 700;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .toggle-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: white;
+      font-size: 13px;
+      cursor: pointer;
+      color: #6b7280;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn.active {
+      background: #ede9fe;
+      color: #4f46e5;
+      border-color: #c4b5fd;
+      font-weight: 700;
+    }
+
+    .upload-box {
+      border: 2px dashed #c7d2fe;
+      border-radius: 10px;
+      padding: 28px 16px;
+      text-align: center;
+      cursor: pointer;
+      background: #fafafe;
+      transition: all 0.2s;
+    }
+
+    .upload-box:hover {
+      border-color: #4f46e5;
+      background: #ede9fe;
+    }
+
+    .upload-box input {
+      display: none;
+    }
+
+    .upload-box .icon {
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+
+    .upload-box p {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .upload-box .hint {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    /* Disabled scan card */
+    .card.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .card.disabled .card-title {
+      color: #9ca3af;
+    }
+
+    /* Locked overlay */
+    .locked-msg {
+      text-align: center;
+      padding: 20px;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    .locked-msg .lock-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    #scanner-box {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    video {
+      width: 100%;
+      display: block;
+      max-height: 280px;
+      object-fit: cover;
+    }
+
+    canvas {
+      display: none;
+    }
+
+    .scan-frame {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 170px;
+      height: 170px;
+      border-radius: 10px;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+    }
+
+    .scan-frame::before,
+    .scan-frame::after,
+    .scan-frame span::before,
+    .scan-frame span::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-color: #4f46e5;
+      border-style: solid;
+    }
+
+    .scan-frame::before {
+      top: 0;
+      left: 0;
+      border-width: 3px 0 0 3px;
+      border-radius: 4px 0 0 0;
+    }
+
+    .scan-frame::after {
+      top: 0;
+      right: 0;
+      border-width: 3px 3px 0 0;
+      border-radius: 0 4px 0 0;
+    }
+
+    .scan-frame span::before {
+      bottom: 0;
+      left: 0;
+      border-width: 0 0 3px 3px;
+      border-radius: 0 0 0 4px;
+    }
+
+    .scan-frame span::after {
+      bottom: 0;
+      right: 0;
+      border-width: 0 3px 3px 0;
+      border-radius: 0 0 4px 0;
+    }
+
+    .status-bar {
+      background: #ede9fe;
+      border-left: 3px solid #4f46e5;
+      border-radius: 0 6px 6px 0;
+      padding: 9px 12px;
+      font-size: 13px;
+      color: #4338ca;
+      margin: 10px 0;
+    }
+
+    .result-card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-top: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e5e7eb;
+    }
+
+    .result-banner {
+      text-align: center;
+      font-size: 17px;
+      font-weight: 700;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .result-banner.verified {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .result-banner.not-verified {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .info-row {
+      display: flex;
+      padding: 8px 0;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 14px;
+      align-items: flex-start;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      color: #9ca3af;
+      width: 110px;
+      flex-shrink: 0;
+      font-size: 13px;
+      padding-top: 1px;
+    }
+
+    .info-value {
+      color: #1a1a2e;
+      font-weight: 500;
+      flex: 1;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge.Verified {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .badge.Pending {
+      background: #fffbeb;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+
+    .badge.Rejected {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .btn-edit {
+      flex: 1;
+      padding: 10px;
+      background: #ede9fe;
+      color: #4f46e5;
+      border: 1.5px solid #c4b5fd;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-edit:hover {
+      background: #ddd6fe;
+    }
+
+    .edit-form-box {
+      background: #fafafe;
+      border: 1px solid #e0d9fe;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .edit-form-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #4f46e5;
+      margin-bottom: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 14px;
+      background: white;
+      color: #1a1a2e;
+      transition: border 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .form-group textarea {
+      height: 70px;
+      resize: vertical;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 10px;
+      background: white;
+      color: #4f46e5;
+      border: 1.5px solid #4f46e5;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #ede9fe;
+    }
+
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 4px 0 14px;
+    }
+
+    .section-divider span {
+      font-size: 12px;
+      color: #9ca3af;
+      white-space: nowrap;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: linear-gradient(135deg, #ede9fe, #f5f3ff);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      border: 1px solid #e0d9fe;
+    }
+
+    .stat-box h3 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #4f46e5;
+    }
+
+    .stat-box p {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 3px;
+      font-weight: 500;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead th {
+      background: #f5f3ff;
+      color: #4f46e5;
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 2px solid #e5e7eb;
+      white-space: nowrap;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    tbody td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #f3f4f6;
+      color: #374151;
+    }
+
+    tbody tr:hover td {
+      background: #fafafe;
+    }
+
+    .collapse-btn {
+      width: 100%;
+      padding: 11px 14px;
+      background: #f5f3ff;
+      border: 1px solid #e0d9fe;
+      border-radius: 8px;
+      color: #4f46e5;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+    }
+
+    .collapse-btn:hover {
+      background: #ede9fe;
+    }
+
+    .collapse-btn .arrow {
+      transition: transform 0.2s;
+    }
+
+    .collapse-btn.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .collapsible-content {
+      display: none;
+    }
+
+    .collapsible-content.open {
+      display: block;
+    }
+
+    .qr-preview {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      display: block;
+      margin: 10px auto;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 4px;
+      background: white;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a2e;
+      color: white;
+      padding: 11px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+      z-index: 9999;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      white-space: nowrap;
+    }
+
+    .install-bar {
+      display: none;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      padding: 10px 16px;
+      font-size: 13px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .install-bar .ibtn {
+      padding: 5px 14px;
+      border-radius: 6px;
+      border: none;
+      background: white;
+      color: #4f46e5;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .install-bar .xbtn {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="install-bar" id="install-bar">
+    <span>📲 Install QRack as an app</span>
+    <button class="ibtn" id="install-btn">Install</button>
+    <button class="xbtn" id="dismiss-btn">✕</button>
+  </div>
+
+  <header>
+    <h1>📦 QRack</h1>
+    <span>Inventory Scanner</span>
+  </header>
+
+  <div class="main">
+
+    <!-- STEP 1: EXCEL CARD -->
+    <div class="card" id="excel-card">
+      <div class="card-title">
+        <span class="step-badge" id="step1-badge">1</span>
+        Upload Excel Sheet
+      </div>
+
+      <!-- Active sheet indicator -->
+      <div class="sheet-indicator" id="sheet-indicator">
+        <span>✅</span>
+        <span id="sheet-name">inventory.xlsx</span>
+        <small id="sheet-count"></small>
+        <button class="sheet-clear" id="sheet-clear-btn" title="Remove sheet">✕</button>
+      </div>
+
+      <div class="upload-box" id="excel-upload-zone">
+        <div class="icon">📊</div>
+        <p>Click to upload .xlsx file</p>
+        <p class="hint">Must include QR Code ID column</p>
+        <input type="file" id="excel-input" accept=".xlsx" />
+      </div>
+
+      <div id="excel-stats" style="display:none">
+        <div class="stats-row">
+          <div class="stat-box">
+            <h3 id="stat-total">0</h3>
+            <p>Total Items</p>
+          </div>
+          <div class="stat-box">
+            <h3 id="stat-qr">0</h3>
+            <p>QR Codes Generated</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVENTORY TABLE (collapsible) -->
+    <div class="card" id="inventory-card" style="display:none">
+      <button class="collapse-btn" id="table-toggle">
+        <span>📋 View Inventory List</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="collapsible-content" id="table-content">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Serial</th>
+                <th>Item Name</th>
+                <th>Value</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>QR ID</th>
+              </tr>
+            </thead>
+            <tbody id="excel-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="section-divider"><span>then scan QR code</span></div>
+
+    <!-- STEP 2: SCAN CARD -->
+    <div class="card" id="scan-card">
+      <div class="card-title">
+        <span class="step-badge" id="step2-badge">2</span>
+        Scan QR Code
+      </div>
+
+      <!-- Locked state -->
+      <div id="scan-locked">
+        <div class="locked-msg">
+          <div class="lock-icon">🔒</div>
+          <p>Upload an Excel sheet above first</p>
+          <p class="hint" style="margin-top:4px">QR scanning will unlock after upload</p>
+        </div>
+      </div>
+
+      <!-- Unlocked state -->
+      <div id="scan-unlocked" style="display:none">
+
+        <!-- Which sheet is active -->
+        <div
+          style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:13px;color:#16a34a;font-weight:600;">
+          📊 Scanning against: <span id="active-sheet-name">inventory.xlsx</span>
+        </div>
+
+        <div class="mode-row">
+          <button class="mode-btn active" id="mode-read-btn">🔍 Read</button>
+          <button class="mode-btn" id="mode-update-btn">✏️ Update</button>
+        </div>
+
+        <div class="toggle-row">
+          <button class="toggle-btn" id="cam-btn">📷 Camera</button>
+          <button class="toggle-btn active" id="file-btn">🖼️ Upload Image</button>
+        </div>
+
+        <div id="camera-box" style="display:none">
+          <div id="scanner-box">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+            <div class="scan-frame"><span></span></div>
+          </div>
+        </div>
+
+        <div id="file-box">
+          <div class="upload-box" id="qr-upload-zone">
+            <div class="icon">🖼️</div>
+            <p>Click to upload QR image</p>
+            <p class="hint">PNG, JPG supported</p>
+            <input type="file" id="qr-input" accept="image/*" />
+          </div>
+          <canvas id="file-canvas" style="display:none"></canvas>
+        </div>
+
+        <div class="status-bar" id="scan-status">Upload a QR image or use camera</div>
+        <div id="scan-result"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let camStream = null;
+    let scanning = true;
+    let currentMode = 'read';
+    let currentMethod = 'file';
+    let sheetLoaded = false;
+    let activeSheetName = '';
+    let deferredPrompt = null;
+
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // PWA
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('install-bar').style.display = 'flex';
+    });
+    window.addEventListener('appinstalled', function () {
+      document.getElementById('install-bar').style.display = 'none';
+    });
+    document.getElementById('install-btn').addEventListener('click', function () {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function () {
+          deferredPrompt = null;
+          document.getElementById('install-bar').style.display = 'none';
+        });
+      }
+    });
+    document.getElementById('dismiss-btn').addEventListener('click', function () {
+      document.getElementById('install-bar').style.display = 'none';
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/static/sw.js').catch(function () { });
+    }
+
+    // On page load check if inventory already exists
+    window.addEventListener('load', function () {
+      fetch('/items').then(function (res) {
+        return res.json();
+      }).then(function (items) {
+        if (items && items.length > 0) {
+          activateSheet('inventory.xlsx', items.length);
+        }
+      }).catch(function () { });
+    });
+
+    // Collapsible table
+    document.getElementById('table-toggle').addEventListener('click', function () {
+      this.classList.toggle('open');
+      document.getElementById('table-content').classList.toggle('open');
+    });
+
+    // Clear sheet
+    document.getElementById('sheet-clear-btn').addEventListener('click', function () {
+      deactivateSheet();
+    });
+
+    function activateSheet(name, count) {
+      sheetLoaded = true;
+      activeSheetName = name;
+      // Update step badges
+      document.getElementById('step1-badge').classList.add('done');
+      document.getElementById('step1-badge').textContent = '✓';
+      // Show indicator
+      document.getElementById('sheet-indicator').classList.add('show');
+      document.getElementById('sheet-name').textContent = name;
+      document.getElementById('sheet-count').textContent = count + ' items';
+      document.getElementById('active-sheet-name').textContent = name;
+      // Hide upload box
+      document.getElementById('excel-upload-zone').style.display = 'none';
+      // Unlock scan
+      document.getElementById('scan-locked').style.display = 'none';
+      document.getElementById('scan-unlocked').style.display = 'block';
+      document.getElementById('step2-badge').style.background = '#4f46e5';
+    }
+
+    function deactivateSheet() {
+      sheetLoaded = false;
+      activeSheetName = '';
+      document.getElementById('step1-badge').classList.remove('done');
+      document.getElementById('step1-badge').textContent = '1';
+      document.getElementById('sheet-indicator').classList.remove('show');
+      document.getElementById('excel-upload-zone').style.display = 'block';
+      document.getElementById('excel-stats').style.display = 'none';
+      document.getElementById('inventory-card').style.display = 'none';
+      document.getElementById('scan-locked').style.display = 'block';
+      document.getElementById('scan-unlocked').style.display = 'none';
+      clearResult();
+      stopCam();
+    }
+
+    // Excel upload
+    document.getElementById('excel-upload-zone').addEventListener('click', function () {
+      document.getElementById('excel-input').click();
+    });
+
+    document.getElementById('excel-input').addEventListener('change', async function (e) {
+      const file = e.target.files[0]; if (!file) return;
+      showToast('⏳ Uploading Excel...');
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const res = await fetch('/upload-excel', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('stat-total').textContent = data.total_items;
+          document.getElementById('stat-qr').textContent = data.new_qr_generated;
+          document.getElementById('excel-stats').style.display = 'block';
+          showToast('✅ ' + data.total_items + ' items loaded!');
+          activateSheet(file.name, data.total_items);
+          loadTable();
+        } else {
+          showToast('❌ ' + data.error);
+        }
+      } catch (err) {
+        showToast('❌ Upload failed.');
+      }
+      e.target.value = '';
+    });
+
+    async function loadTable() {
+      const res = await fetch('/items');
+      const items = await res.json();
+      document.getElementById('excel-tbody').innerHTML = items.map(function (item) {
+        return '<tr>'
+          + '<td>' + (item['Serial Number'] || '') + '</td>'
+          + '<td>' + (item['Item Name'] || '') + '</td>'
+          + '<td>' + (item['Value'] || '') + '</td>'
+          + '<td><span class="badge ' + item['Verification Status'] + '">' + (item['Verification Status'] || '') + '</span></td>'
+          + '<td>' + (item['Varied Date'] || '') + '</td>'
+          + '<td style="font-size:12px;color:#6b7280">' + (item['QR Code ID'] || '') + '</td>'
+          + '</tr>';
+      }).join('');
+      document.getElementById('inventory-card').style.display = 'block';
+    }
+
+    // Mode
+    document.getElementById('mode-read-btn').addEventListener('click', function () { setMode('read'); });
+    document.getElementById('mode-update-btn').addEventListener('click', function () { setMode('update'); });
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById('mode-read-btn').classList.toggle('active', mode === 'read');
+      document.getElementById('mode-update-btn').classList.toggle('active', mode === 'update');
+      clearResult();
+      setStatus(mode === 'read' ? 'Read mode — scan to view item details' : 'Update mode — scan to edit item');
+    }
+
+    // Method
+    document.getElementById('cam-btn').addEventListener('click', function () { setMethod('camera'); });
+    document.getElementById('file-btn').addEventListener('click', function () { setMethod('file'); });
+
+    function setMethod(method) {
+      currentMethod = method;
+      document.getElementById('cam-btn').classList.toggle('active', method === 'camera');
+      document.getElementById('file-btn').classList.toggle('active', method === 'file');
+      document.getElementById('camera-box').style.display = method === 'camera' ? 'block' : 'none';
+      document.getElementById('file-box').style.display = method === 'file' ? 'block' : 'none';
+      clearResult();
+      if (method === 'camera') {
+        scanning = true;
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+          .then(function (s) {
+            camStream = s; video.srcObject = s; video.play();
+            requestAnimationFrame(scanTick);
+            setStatus('Point camera at a QR code...');
+          })
+          .catch(function () { setStatus('Camera not available. Use Upload Image.'); });
+      } else {
+        stopCam();
+        setStatus(currentMode === 'read' ? 'Upload a QR image to view item' : 'Upload a QR image to edit item');
+      }
+    }
+
+    function stopCam() {
+      if (camStream) { camStream.getTracks().forEach(function (t) { t.stop(); }); camStream = null; }
+    }
+
+    function scanTick() {
+      if (currentMethod !== 'camera') return;
+      if (video.readyState === video.HAVE_ENOUGH_DATA && scanning) {
+        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0);
+        const code = jsQR(ctx.getImageData(0, 0, canvas.width, canvas.height).data, canvas.width, canvas.height);
+        if (code) { scanning = false; setStatus('QR detected: ' + code.data); processQR(code.data); }
+      }
+      requestAnimationFrame(scanTick);
+    }
+
+    // QR image upload
+    document.getElementById('qr-upload-zone').addEventListener('click', function () {
+      document.getElementById('qr-input').click();
+    });
+
+    document.getElementById('qr-input').addEventListener('change', function (e) {
+      const file = e.target.files[0]; if (!file) return;
+      setStatus('Reading QR...');
+      const reader = new FileReader();
+      reader.onload = function (ev) {
+        const img = new Image();
+        img.onload = function () {
+          const fc = document.getElementById('file-canvas');
+          fc.width = img.width; fc.height = img.height;
+          fc.getContext('2d').drawImage(img, 0, 0);
+          const code = jsQR(fc.getContext('2d').getImageData(0, 0, fc.width, fc.height).data, fc.width, fc.height);
+          if (code) {
+            setStatus('QR detected: ' + code.data);
+            document.getElementById('scan-result').innerHTML = '<img src="' + ev.target.result + '" class="qr-preview"/>';
+            processQR(code.data);
+          } else {
+            setStatus('❌ Could not read QR. Try a clearer image.');
+          }
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+      e.target.value = '';
+    });
+
+    async function processQR(qrId) {
+      const res = await fetch('/item/' + qrId);
+      if (!res.ok) {
+        document.getElementById('scan-result').innerHTML += '<div class="result-card"><p style="color:#dc2626;text-align:center;padding:12px">❌ Item not found in <strong>' + activeSheetName + '</strong><br><small style="color:#9ca3af">QR ID: ' + qrId + '</small></p></div>';
+        addScanAgain(); return;
+      }
+      const item = await res.json();
+      if (currentMode === 'read') showReadCard(item);
+      else showEditForm(item);
+    }
+
+    function showReadCard(item) {
+      const v = item['Verification Status'] === 'Verified';
+      const html = '<div class="result-card">'
+        + '<div class="result-banner ' + (v ? 'verified' : 'not-verified') + '">' + (v ? '✅ VERIFIED' : '❌ NOT VERIFIED') + '</div>'
+        + '<div class="info-row"><span class="info-label">Item Name</span><span class="info-value">' + (item['Item Name'] || '') + '</span></div>'
+        + '<div class="info-row"><span class="info-label">Serial No.</span><span class="info-value">' + (item['Serial Number'] || '') + '</span></div>'
+        + '<div class="info-row"><span class="info-label">Description</span><span class="info-value">' + (item['Description'] || '') + '</span></div>'
+        + '<div class="info-row"><span class="info-label">Value</span><span class="info-value">' + (item['Value'] || '') + '</span></div>'
+        + '<div class="info-row"><span class="info-label">Date</span><span class="info-value">' + (item['Varied Date'] || '') + '</span></div>'
+        + '<div class="info-row"><span class="info-label">Status</span><span class="info-value"><span class="badge ' + item['Verification Status'] + '">' + (item['Verification Status'] || '') + '</span></span></div>'
+        + '<div class="info-row"><span class="info-label">QR ID</span><span class="info-value" style="font-size:13px;color:#6b7280">' + (item['QR Code ID'] || '') + '</span></div>'
+        + '<div class="action-row"><button class="btn-edit" id="edit-item-btn">✏️ Edit This Item</button></div>'
+        + '</div>';
+      document.getElementById('scan-result').innerHTML += html;
+      document.getElementById('edit-item-btn').addEventListener('click', function () { switchToEdit(item); });
+      addScanAgain();
+    }
+
+    function switchToEdit(item) {
+      setMode('update');
+      clearResult();
+      showEditForm(item);
+    }
+
+    function showEditForm(item) {
+      const opts = ['Verified', 'Pending', 'Rejected'].map(function (s) {
+        return '<option ' + (item['Verification Status'] === s ? 'selected' : '') + '>' + s + '</option>';
+      }).join('');
+      const html = '<div class="edit-form-box">'
+        + '<div class="edit-form-title">✏️ Editing: ' + (item['QR Code ID'] || '') + '</div>'
+        + '<div class="form-group"><label>Item Name</label><input id="f-name" value="' + (item['Item Name'] || '') + '"/></div>'
+        + '<div class="form-group"><label>Description</label><textarea id="f-desc">' + (item['Description'] || '') + '</textarea></div>'
+        + '<div class="form-group"><label>Value</label><input id="f-value" value="' + (item['Value'] || '') + '"/></div>'
+        + '<div class="form-group"><label>Verification Status</label><select id="f-status">' + opts + '</select></div>'
+        + '<div class="form-group"><label>Varied Date</label><input type="date" id="f-date" value="' + (item['Varied Date'] || '') + '"/></div>'
+        + '<button class="btn-primary" id="save-btn">💾 Save Changes</button>'
+        + '</div>';
+      document.getElementById('scan-result').innerHTML += html;
+      document.getElementById('save-btn').addEventListener('click', function () { submitUpdate(item['QR Code ID']); });
+      addScanAgain();
+    }
+
+    async function submitUpdate(qrId) {
+      const data = {
+        'Item Name': document.getElementById('f-name').value,
+        'Description': document.getElementById('f-desc').value,
+        'Value': document.getElementById('f-value').value,
+        'Verification Status': document.getElementById('f-status').value,
+        'Varied Date': document.getElementById('f-date').value
+      };
+      const res = await fetch('/item/' + qrId, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        showToast('✅ Item updated in ' + activeSheetName + '!');
+        loadTable();
+      } else {
+        showToast('❌ Update failed.');
+      }
+    }
+
+    function addScanAgain() {
+      const btn = document.createElement('button');
+      btn.className = 'btn-secondary';
+      btn.textContent = '🔄 Scan Again';
+      btn.addEventListener('click', resetScan);
+      document.getElementById('scan-result').appendChild(btn);
+    }
+
+    function resetScan() {
+      scanning = true;
+      clearResult();
+      setStatus(currentMode === 'read' ? 'Ready to scan' : 'Ready to scan for update');
+    }
+
+    function clearResult() { document.getElementById('scan-result').innerHTML = ''; }
+    function setStatus(msg) { document.getElementById('scan-status').textContent = msg; }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.style.display = 'block';
+      setTimeout(function () { t.style.display = 'none'; }, 3000);
+    }
+  </script>
+</body>
+
+</html>
