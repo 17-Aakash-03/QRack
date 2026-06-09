@@ -1,0 +1,28 @@
+# Excel database
+inventory.xlsx
+
+# QR code images
+qrcodes/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Temp files
+tempCodeRunnerFile.py
+*.tmp
+*.log
+
+# Virtual environment
+venv/
+env/
+.env
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
