@@ -8,6 +8,7 @@
   <link rel="manifest" href="/static/manifest.json">
   <meta name="theme-color" content="#4f46e5">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="QRack">
   <script src="/static/jsqr.js"></script>
   <style>
     * {
@@ -26,7 +27,7 @@
     header {
       background: linear-gradient(135deg, #4f46e5, #7c3aed);
       color: white;
-      padding: 14px 20px;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -36,31 +37,16 @@
     header h1 {
       font-size: 20px;
       font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
-    header .user-info {
+    header span {
+      font-size: 12px;
+      opacity: 0.85;
       margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-    }
-
-    header .role-badge {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.15);
       padding: 3px 10px;
       border-radius: 20px;
-      font-size: 12px;
-    }
-
-    header .logout-btn {
-      background: rgba(255, 255, 255, 0.15);
-      border: none;
-      color: white;
-      padding: 5px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
     }
 
     .main {
@@ -98,175 +84,62 @@
       margin-left: 6px;
     }
 
-    /* Login */
-    #login-page {
-      min-height: 100vh;
+    /* Active sheet indicator */
+    .sheet-indicator {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .sheet-indicator.show {
       display: flex;
       align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      gap: 8px;
     }
 
-    .login-box {
-      background: white;
-      border-radius: 16px;
-      padding: 32px;
-      width: 100%;
-      max-width: 380px;
-      margin: 16px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    }
-
-    .login-box h2 {
-      text-align: center;
-      font-size: 24px;
-      color: #4f46e5;
-      margin-bottom: 6px;
-    }
-
-    .login-box p {
-      text-align: center;
-      color: #6b7280;
+    .sheet-indicator span {
       font-size: 13px;
-      margin-bottom: 24px;
+      color: #16a34a;
+      font-weight: 600;
     }
 
-    .login-error {
-      background: #fef2f2;
-      color: #dc2626;
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 13px;
-      margin-bottom: 14px;
-      display: none;
-      text-align: center;
-    }
-
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    .form-group label {
-      display: block;
+    .sheet-indicator small {
       font-size: 12px;
       color: #6b7280;
-      margin-bottom: 5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
+      margin-left: auto;
     }
 
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      font-size: 14px;
-      background: white;
-      color: #1a1a2e;
-      transition: border 0.2s;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    }
-
-    .form-group textarea {
-      height: 70px;
-      resize: vertical;
-    }
-
-    .btn-primary {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
-      transition: all 0.2s;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn-secondary {
-      width: 100%;
-      padding: 10px;
-      background: white;
-      color: #4f46e5;
-      border: 1.5px solid #4f46e5;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: all 0.2s;
-    }
-
-    .btn-secondary:hover {
-      background: #ede9fe;
-    }
-
-    .btn-danger {
-      padding: 6px 12px;
-      background: #fef2f2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-      border-radius: 6px;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    /* Tabs */
-    .tabs {
-      display: flex;
-      background: white;
-      border-bottom: 1px solid #e5e7eb;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-      overflow-x: auto;
-    }
-
-    .tab-btn {
-      flex: 1;
-      min-width: 80px;
-      padding: 13px 8px;
-      border: none;
+    .sheet-clear {
       background: none;
-      font-size: 13px;
+      border: none;
+      color: #dc2626;
       cursor: pointer;
-      color: #6b7280;
-      border-bottom: 3px solid transparent;
-      font-weight: 500;
-      white-space: nowrap;
+      font-size: 16px;
+      padding: 0 4px;
     }
 
-    .tab-btn.active {
-      color: #4f46e5;
-      border-bottom: 3px solid #4f46e5;
+    /* Step badges */
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      background: #4f46e5;
+      color: white;
+      border-radius: 50%;
+      font-size: 11px;
       font-weight: 700;
-      background: #fafafe;
+      flex-shrink: 0;
     }
 
-    .page {
-      display: none;
+    .step-badge.done {
+      background: #16a34a;
     }
 
-    .page.active {
-      display: block;
-    }
-
-    /* Mode/Toggle */
     .mode-row {
       display: flex;
       gap: 8px;
@@ -322,7 +195,6 @@
       font-weight: 700;
     }
 
-    /* Upload */
     .upload-box {
       border: 2px dashed #c7d2fe;
       border-radius: 10px;
@@ -358,7 +230,29 @@
       margin-top: 4px;
     }
 
-    /* Camera */
+    /* Disabled scan card */
+    .card.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .card.disabled .card-title {
+      color: #9ca3af;
+    }
+
+    /* Locked overlay */
+    .locked-msg {
+      text-align: center;
+      padding: 20px;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    .locked-msg .lock-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
     #scanner-box {
       position: relative;
       border-radius: 10px;
@@ -369,7 +263,7 @@
     video {
       width: 100%;
       display: block;
-      max-height: 260px;
+      max-height: 280px;
       object-fit: cover;
     }
 
@@ -382,8 +276,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 160px;
-      height: 160px;
+      width: 170px;
+      height: 170px;
       border-radius: 10px;
       box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
     }
@@ -394,8 +288,8 @@
     .scan-frame span::after {
       content: '';
       position: absolute;
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       border-color: #4f46e5;
       border-style: solid;
     }
@@ -438,7 +332,6 @@
       margin: 10px 0;
     }
 
-    /* Result */
     .result-card {
       background: white;
       border-radius: 12px;
@@ -469,12 +362,6 @@
       border: 1px solid #fecaca;
     }
 
-    .result-banner.pending {
-      background: #fffbeb;
-      color: #d97706;
-      border: 1px solid #fde68a;
-    }
-
     .info-row {
       display: flex;
       padding: 8px 0;
@@ -489,9 +376,10 @@
 
     .info-label {
       color: #9ca3af;
-      width: 120px;
+      width: 110px;
       flex-shrink: 0;
       font-size: 13px;
+      padding-top: 1px;
     }
 
     .info-value {
@@ -526,40 +414,29 @@
       border: 1px solid #fecaca;
     }
 
-    /* Remark box */
-    .remark-box {
-      background: #fafafe;
-      border: 1px solid #e0d9fe;
-      border-radius: 10px;
-      padding: 14px;
-      margin-top: 12px;
+    .action-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
     }
 
-    .remark-box label {
-      display: block;
-      font-size: 12px;
-      color: #6b7280;
-      margin-bottom: 6px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .remark-box textarea {
-      width: 100%;
-      padding: 9px;
-      border: 1px solid #e5e7eb;
+    .btn-edit {
+      flex: 1;
+      padding: 10px;
+      background: #ede9fe;
+      color: #4f46e5;
+      border: 1.5px solid #c4b5fd;
       border-radius: 8px;
       font-size: 14px;
-      height: 70px;
-      resize: vertical;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
-    .remark-box textarea:focus {
-      outline: none;
-      border-color: #4f46e5;
+    .btn-edit:hover {
+      background: #ddd6fe;
     }
 
-    /* Edit form */
     .edit-form-box {
       background: #fafafe;
       border: 1px solid #e0d9fe;
@@ -575,15 +452,116 @@
       margin-bottom: 14px;
     }
 
-    /* Stats */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 14px;
+      background: white;
+      color: #1a1a2e;
+      transition: border 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .form-group textarea {
+      height: 70px;
+      resize: vertical;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 10px;
+      background: white;
+      color: #4f46e5;
+      border: 1.5px solid #4f46e5;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #ede9fe;
+    }
+
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 4px 0 14px;
+    }
+
+    .section-divider span {
+      font-size: 12px;
+      color: #9ca3af;
+      white-space: nowrap;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .stats-row {
+      display: flex;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-top: 14px;
     }
 
     .stat-box {
+      flex: 1;
       background: linear-gradient(135deg, #ede9fe, #f5f3ff);
       border-radius: 10px;
       padding: 14px;
@@ -592,50 +570,21 @@
     }
 
     .stat-box h3 {
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 800;
       color: #4f46e5;
     }
 
     .stat-box p {
-      font-size: 11px;
+      font-size: 12px;
       color: #6b7280;
       margin-top: 3px;
+      font-weight: 500;
     }
 
-    .stat-box.green {
-      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-      border-color: #bbf7d0;
-    }
-
-    .stat-box.green h3 {
-      color: #16a34a;
-    }
-
-    .stat-box.red {
-      background: linear-gradient(135deg, #fef2f2, #fee2e2);
-      border-color: #fecaca;
-    }
-
-    .stat-box.red h3 {
-      color: #dc2626;
-    }
-
-    .stat-box.yellow {
-      background: linear-gradient(135deg, #fffbeb, #fef9c3);
-      border-color: #fde68a;
-    }
-
-    .stat-box.yellow h3 {
-      color: #d97706;
-    }
-
-    /* Table */
     .table-wrap {
       overflow-x: auto;
       border-radius: 8px;
-      max-height: 400px;
-      overflow-y: auto;
     }
 
     table {
@@ -653,8 +602,8 @@
       white-space: nowrap;
       font-weight: 700;
       font-size: 12px;
-      position: sticky;
-      top: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
     }
 
     tbody td {
@@ -667,139 +616,50 @@
       background: #fafafe;
     }
 
-    /* Users list */
-    .user-item {
-      display: flex;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid #f3f4f6;
-      gap: 10px;
-    }
-
-    .user-item:last-child {
-      border-bottom: none;
-    }
-
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-      flex-shrink: 0;
-    }
-
-    .user-name {
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    .user-role {
-      font-size: 12px;
-      color: #6b7280;
-    }
-
-    .head-badge {
-      background: #f0fdf4;
-      color: #16a34a;
-      border: 1px solid #bbf7d0;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .member-badge {
-      background: #eff6ff;
-      color: #2563eb;
-      border: 1px solid #bfdbfe;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    /* Sheet indicator */
-    .sheet-indicator {
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
+    .collapse-btn {
+      width: 100%;
+      padding: 11px 14px;
+      background: #f5f3ff;
+      border: 1px solid #e0d9fe;
       border-radius: 8px;
-      padding: 10px 14px;
-      margin-bottom: 14px;
-      display: none;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .sheet-indicator.show {
-      display: flex;
-    }
-
-    .sheet-indicator span {
-      font-size: 13px;
-      color: #16a34a;
+      color: #4f46e5;
+      font-size: 14px;
       font-weight: 600;
-    }
-
-    .sheet-indicator small {
-      font-size: 12px;
-      color: #6b7280;
-      margin-left: auto;
-    }
-
-    .sheet-clear {
-      background: none;
-      border: none;
-      color: #dc2626;
       cursor: pointer;
-      font-size: 16px;
-    }
-
-    .locked-msg {
-      text-align: center;
-      padding: 24px;
-      color: #9ca3af;
-    }
-
-    .locked-msg .lock-icon {
-      font-size: 32px;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
       margin-bottom: 8px;
     }
 
-    .section-divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 4px 0 14px;
+    .collapse-btn:hover {
+      background: #ede9fe;
     }
 
-    .section-divider span {
-      font-size: 12px;
-      color: #9ca3af;
-      white-space: nowrap;
-      font-weight: 600;
-      text-transform: uppercase;
+    .collapse-btn .arrow {
+      transition: transform 0.2s;
     }
 
-    .section-divider::before,
-    .section-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #e5e7eb;
+    .collapse-btn.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .collapsible-content {
+      display: none;
+    }
+
+    .collapsible-content.open {
+      display: block;
     }
 
     .qr-preview {
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
       object-fit: contain;
       display: block;
-      margin: 8px auto;
+      margin: 10px auto;
       border: 1px solid #e5e7eb;
       border-radius: 8px;
       padding: 4px;
@@ -822,97 +682,146 @@
       white-space: nowrap;
     }
 
-    .collapse-btn {
-      width: 100%;
-      padding: 11px 14px;
-      background: #f5f3ff;
-      border: 1px solid #e0d9fe;
-      border-radius: 8px;
-      color: #4f46e5;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: left;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.2s;
-      margin-bottom: 8px;
-    }
-
-    .collapse-btn.open .arrow {
-      transform: rotate(180deg);
-    }
-
-    .arrow {
-      transition: transform 0.2s;
-      display: inline-block;
-    }
-
-    .collapsible-content {
+    .install-bar {
       display: none;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      padding: 10px 16px;
+      font-size: 13px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
-    .collapsible-content.open {
-      display: block;
+    .install-bar .ibtn {
+      padding: 5px 14px;
+      border-radius: 6px;
+      border: none;
+      background: white;
+      color: #4f46e5;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 13px;
     }
 
-    .no-access {
-      text-align: center;
-      padding: 30px;
-      color: #9ca3af;
-      font-size: 14px;
+    .install-bar .xbtn {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+      padding: 0 4px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- LOGIN PAGE -->
-  <div id="login-page">
-    <div class="login-box">
-      <h2>📦 QRack</h2>
-      <p>Inventory Scanner — Login to continue</p>
-      <div class="login-error" id="login-error"></div>
-      <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="login-username" placeholder="Enter username" />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="login-password" placeholder="Enter password" />
-      </div>
-      <button class="btn-primary" id="login-btn">Login</button>
-      <p style="text-align:center;font-size:12px;color:#9ca3af;margin-top:14px">Default: teamhead / admin123</p>
-    </div>
+  <div class="install-bar" id="install-bar">
+    <span>📲 Install QRack as an app</span>
+    <button class="ibtn" id="install-btn">Install</button>
+    <button class="xbtn" id="dismiss-btn">✕</button>
   </div>
 
-  <!-- MAIN APP -->
-  <div id="main-app" style="display:none">
-    <header>
-      <h1>📦 QRack</h1>
-      <div class="user-info">
-        <span id="header-username"></span>
-        <span class="role-badge" id="header-role"></span>
-        <button class="logout-btn" id="logout-btn">Logout</button>
-      </div>
-    </header>
+  <header>
+    <h1>📦 QRack</h1>
+    <span>Inventory Scanner</span>
+  </header>
 
-    <div class="tabs" id="main-tabs">
-      <button class="tab-btn active" id="tab-scan-btn">📷 Scan</button>
-      <button class="tab-btn" id="tab-report-btn" style="display:none">📊 Report</button>
-      <button class="tab-btn" id="tab-team-btn" style="display:none">👥 Team</button>
-      <button class="tab-btn" id="tab-excel-btn" style="display:none">📂 Excel</button>
+  <div class="main">
+
+    <!-- STEP 1: EXCEL CARD -->
+    <div class="card" id="excel-card">
+      <div class="card-title">
+        <span class="step-badge" id="step1-badge">1</span>
+        Upload Excel Sheet
+      </div>
+
+      <!-- Active sheet indicator -->
+      <div class="sheet-indicator" id="sheet-indicator">
+        <span>✅</span>
+        <span id="sheet-name">inventory.xlsx</span>
+        <small id="sheet-count"></small>
+        <button class="sheet-clear" id="sheet-clear-btn" title="Remove sheet">✕</button>
+      </div>
+
+      <div class="upload-box" id="excel-upload-zone">
+        <div class="icon">📊</div>
+        <p>Click to upload .xlsx file</p>
+        <p class="hint">Must include QR Code ID column</p>
+        <input type="file" id="excel-input" accept=".xlsx" />
+      </div>
+
+      <div id="excel-stats" style="display:none">
+        <div class="stats-row">
+          <div class="stat-box">
+            <h3 id="stat-total">0</h3>
+            <p>Total Items</p>
+          </div>
+          <div class="stat-box">
+            <h3 id="stat-qr">0</h3>
+            <p>QR Codes Generated</p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- SCAN PAGE -->
-    <div class="page active main" id="page-scan">
-      <div class="card">
-        <div class="card-title">📷 Scan QR Code</div>
+    <!-- INVENTORY TABLE (collapsible) -->
+    <div class="card" id="inventory-card" style="display:none">
+      <button class="collapse-btn" id="table-toggle">
+        <span>📋 View Inventory List</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="collapsible-content" id="table-content">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Serial</th>
+                <th>Item Name</th>
+                <th>Value</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>QR ID</th>
+              </tr>
+            </thead>
+            <tbody id="excel-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-        <div class="mode-row" id="mode-row">
+    <!-- DIVIDER -->
+    <div class="section-divider"><span>then scan QR code</span></div>
+
+    <!-- STEP 2: SCAN CARD -->
+    <div class="card" id="scan-card">
+      <div class="card-title">
+        <span class="step-badge" id="step2-badge">2</span>
+        Scan QR Code
+      </div>
+
+      <!-- Locked state -->
+      <div id="scan-locked">
+        <div class="locked-msg">
+          <div class="lock-icon">🔒</div>
+          <p>Upload an Excel sheet above first</p>
+          <p class="hint" style="margin-top:4px">QR scanning will unlock after upload</p>
+        </div>
+      </div>
+
+      <!-- Unlocked state -->
+      <div id="scan-unlocked" style="display:none">
+
+        <!-- Which sheet is active -->
+        <div
+          style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:13px;color:#16a34a;font-weight:600;">
+          📊 Scanning against: <span id="active-sheet-name">inventory.xlsx</span>
+        </div>
+
+        <div class="mode-row">
           <button class="mode-btn active" id="mode-read-btn">🔍 Read</button>
-          <button class="mode-btn" id="mode-update-btn" style="display:none">✏️ Update</button>
+          <button class="mode-btn" id="mode-update-btn">✏️ Update</button>
         </div>
 
         <div class="toggle-row">
@@ -943,229 +852,148 @@
       </div>
     </div>
 
-    <!-- REPORT PAGE (head only) -->
-    <div class="page main" id="page-report">
-      <div class="card">
-        <div class="card-title">📊 Scan Report</div>
-        <div class="stats-grid">
-          <div class="stat-box">
-            <h3 id="r-total">0</h3>
-            <p>Total Items</p>
-          </div>
-          <div class="stat-box">
-            <h3 id="r-scanned">0</h3>
-            <p>Scanned</p>
-          </div>
-          <div class="stat-box">
-            <h3 id="r-not-scanned">0</h3>
-            <p>Not Scanned</p>
-          </div>
-          <div class="stat-box green">
-            <h3 id="r-verified">0</h3>
-            <p>Verified</p>
-          </div>
-          <div class="stat-box yellow">
-            <h3 id="r-pending">0</h3>
-            <p>Pending</p>
-          </div>
-          <div class="stat-box red">
-            <h3 id="r-rejected">0</h3>
-            <p>Rejected</p>
-          </div>
-        </div>
-        <button class="btn-primary" id="download-report-btn">⬇️ Download Report (Excel)</button>
-      </div>
-
-      <div class="card">
-        <button class="collapse-btn" id="logs-toggle">
-          <span>📋 Scan Logs</span>
-          <span class="arrow">▼</span>
-        </button>
-        <div class="collapsible-content" id="logs-content">
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>QR ID</th>
-                  <th>Item</th>
-                  <th>Scanned By</th>
-                  <th>Timestamp</th>
-                  <th>Status</th>
-                  <th>Remark</th>
-                </tr>
-              </thead>
-              <tbody id="logs-tbody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TEAM PAGE (head only) -->
-    <div class="page main" id="page-team">
-      <div class="card">
-        <div class="card-title">➕ Add Team Member</div>
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="new-username" placeholder="Enter username" />
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="new-password" placeholder="Enter password" />
-        </div>
-        <div class="form-group">
-          <label>Role</label>
-          <select id="new-role">
-            <option value="member">Member</option>
-            <option value="head">Team Head</option>
-          </select>
-        </div>
-        <button class="btn-primary" id="add-user-btn">➕ Add Member</button>
-      </div>
-
-      <div class="card">
-        <div class="card-title">👥 Team Members</div>
-        <div id="users-list"></div>
-      </div>
-    </div>
-
-    <!-- EXCEL PAGE (head only) -->
-    <div class="page main" id="page-excel">
-      <div class="card">
-        <div class="card-title">📂 Upload Excel Sheet</div>
-        <div class="sheet-indicator" id="sheet-indicator">
-          <span>✅</span>
-          <span id="sheet-name">inventory.xlsx</span>
-          <small id="sheet-count"></small>
-          <button class="sheet-clear" id="sheet-clear-btn">✕</button>
-        </div>
-        <div class="upload-box" id="excel-upload-zone">
-          <div class="icon">📊</div>
-          <p>Click to upload .xlsx file</p>
-          <p class="hint">Must include QR Code ID column</p>
-          <input type="file" id="excel-input" accept=".xlsx" />
-        </div>
-      </div>
-
-      <div class="card" id="inventory-card" style="display:none">
-        <button class="collapse-btn" id="table-toggle">
-          <span>📋 Inventory List</span>
-          <span class="arrow">▼</span>
-        </button>
-        <div class="collapsible-content" id="table-content">
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Serial</th>
-                  <th>Item Name</th>
-                  <th>Value</th>
-                  <th>Status</th>
-                  <th>Date</th>
-                  <th>QR ID</th>
-                </tr>
-              </thead>
-              <tbody id="excel-tbody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
 
   <div class="toast" id="toast"></div>
 
   <script>
-    let camStream = null, scanning = true;
-    let currentMode = 'read', currentMethod = 'file';
-    let currentUser = null;
+    let camStream = null;
+    let scanning = true;
+    let currentMode = 'read';
+    let currentMethod = 'file';
+    let sheetLoaded = false;
+    let activeSheetName = '';
+    let deferredPrompt = null;
+
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
-    // Check session on load
-    window.addEventListener('load', async function () {
-      const res = await fetch('/me');
-      const data = await res.json();
-      if (data.logged_in) {
-        currentUser = data;
-        showApp(data);
+    // PWA
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('install-bar').style.display = 'flex';
+    });
+    window.addEventListener('appinstalled', function () {
+      document.getElementById('install-bar').style.display = 'none';
+    });
+    document.getElementById('install-btn').addEventListener('click', function () {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function () {
+          deferredPrompt = null;
+          document.getElementById('install-bar').style.display = 'none';
+        });
       }
-      // Check existing inventory
-      fetch('/items').then(r => r.json()).then(function (items) {
+    });
+    document.getElementById('dismiss-btn').addEventListener('click', function () {
+      document.getElementById('install-bar').style.display = 'none';
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/static/sw.js').catch(function () { });
+    }
+
+    // On page load check if inventory already exists
+    window.addEventListener('load', function () {
+      fetch('/items').then(function (res) {
+        return res.json();
+      }).then(function (items) {
         if (items && items.length > 0) {
-          document.getElementById('sheet-indicator').classList.add('show');
-          document.getElementById('sheet-name').textContent = 'inventory.xlsx';
-          document.getElementById('sheet-count').textContent = items.length + ' items';
-          document.getElementById('excel-upload-zone').style.display = 'none';
+          activateSheet('inventory.xlsx', items.length);
         }
       }).catch(function () { });
     });
 
-    // Login
-    document.getElementById('login-btn').addEventListener('click', async function () {
-      const username = document.getElementById('login-username').value.trim();
-      const password = document.getElementById('login-password').value.trim();
-      if (!username || !password) { showLoginError('Enter username and password'); return; }
-      const res = await fetch('/login', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-      const data = await res.json();
-      if (data.success) {
-        currentUser = data;
-        showApp(data);
-      } else {
-        showLoginError(data.error || 'Login failed');
-      }
+    // Collapsible table
+    document.getElementById('table-toggle').addEventListener('click', function () {
+      this.classList.toggle('open');
+      document.getElementById('table-content').classList.toggle('open');
     });
 
-    document.getElementById('login-password').addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') document.getElementById('login-btn').click();
+    // Clear sheet
+    document.getElementById('sheet-clear-btn').addEventListener('click', function () {
+      deactivateSheet();
     });
 
-    function showLoginError(msg) {
-      const el = document.getElementById('login-error');
-      el.textContent = msg; el.style.display = 'block';
+    function activateSheet(name, count) {
+      sheetLoaded = true;
+      activeSheetName = name;
+      // Update step badges
+      document.getElementById('step1-badge').classList.add('done');
+      document.getElementById('step1-badge').textContent = '✓';
+      // Show indicator
+      document.getElementById('sheet-indicator').classList.add('show');
+      document.getElementById('sheet-name').textContent = name;
+      document.getElementById('sheet-count').textContent = count + ' items';
+      document.getElementById('active-sheet-name').textContent = name;
+      // Hide upload box
+      document.getElementById('excel-upload-zone').style.display = 'none';
+      // Unlock scan
+      document.getElementById('scan-locked').style.display = 'none';
+      document.getElementById('scan-unlocked').style.display = 'block';
+      document.getElementById('step2-badge').style.background = '#4f46e5';
     }
 
-    function showApp(user) {
-      document.getElementById('login-page').style.display = 'none';
-      document.getElementById('main-app').style.display = 'block';
-      document.getElementById('header-username').textContent = '👤 ' + user.username;
-      document.getElementById('header-role').textContent = user.role === 'head' ? '⭐ Team Head' : '👷 Member';
-      // Show head-only tabs
-      if (user.role === 'head') {
-        document.getElementById('tab-report-btn').style.display = 'flex';
-        document.getElementById('tab-team-btn').style.display = 'flex';
-        document.getElementById('tab-excel-btn').style.display = 'flex';
-        document.getElementById('mode-update-btn').style.display = 'flex';
-      }
-      setMethod('file');
-    }
-
-    // Logout
-    document.getElementById('logout-btn').addEventListener('click', async function () {
-      await fetch('/logout', { method: 'POST' });
-      currentUser = null;
-      document.getElementById('main-app').style.display = 'none';
-      document.getElementById('login-page').style.display = 'flex';
+    function deactivateSheet() {
+      sheetLoaded = false;
+      activeSheetName = '';
+      document.getElementById('step1-badge').classList.remove('done');
+      document.getElementById('step1-badge').textContent = '1';
+      document.getElementById('sheet-indicator').classList.remove('show');
+      document.getElementById('excel-upload-zone').style.display = 'block';
+      document.getElementById('excel-stats').style.display = 'none';
+      document.getElementById('inventory-card').style.display = 'none';
+      document.getElementById('scan-locked').style.display = 'block';
+      document.getElementById('scan-unlocked').style.display = 'none';
+      clearResult();
       stopCam();
+    }
+
+    // Excel upload
+    document.getElementById('excel-upload-zone').addEventListener('click', function () {
+      document.getElementById('excel-input').click();
     });
 
-    // Tabs
-    document.getElementById('tab-scan-btn').addEventListener('click', function () { showTab('scan'); });
-    document.getElementById('tab-report-btn').addEventListener('click', function () { showTab('report'); loadReport(); });
-    document.getElementById('tab-team-btn').addEventListener('click', function () { showTab('team'); loadUsers(); });
-    document.getElementById('tab-excel-btn').addEventListener('click', function () { showTab('excel'); });
+    document.getElementById('excel-input').addEventListener('change', async function (e) {
+      const file = e.target.files[0]; if (!file) return;
+      showToast('⏳ Uploading Excel...');
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const res = await fetch('/upload-excel', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('stat-total').textContent = data.total_items;
+          document.getElementById('stat-qr').textContent = data.new_qr_generated;
+          document.getElementById('excel-stats').style.display = 'block';
+          showToast('✅ ' + data.total_items + ' items loaded!');
+          activateSheet(file.name, data.total_items);
+          loadTable();
+        } else {
+          showToast('❌ ' + data.error);
+        }
+      } catch (err) {
+        showToast('❌ Upload failed.');
+      }
+      e.target.value = '';
+    });
 
-    function showTab(tab) {
-      document.querySelectorAll('.page.main').forEach(function (p) { p.classList.remove('active'); });
-      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
-      document.getElementById('page-' + tab).classList.add('active');
-      document.getElementById('tab-' + tab + '-btn').classList.add('active');
-      if (tab !== 'scan') stopCam();
+    async function loadTable() {
+      const res = await fetch('/items');
+      const items = await res.json();
+      document.getElementById('excel-tbody').innerHTML = items.map(function (item) {
+        return '<tr>'
+          + '<td>' + (item['Serial Number'] || '') + '</td>'
+          + '<td>' + (item['Item Name'] || '') + '</td>'
+          + '<td>' + (item['Value'] || '') + '</td>'
+          + '<td><span class="badge ' + item['Verification Status'] + '">' + (item['Verification Status'] || '') + '</span></td>'
+          + '<td>' + (item['Varied Date'] || '') + '</td>'
+          + '<td style="font-size:12px;color:#6b7280">' + (item['QR Code ID'] || '') + '</td>'
+          + '</tr>';
+      }).join('');
+      document.getElementById('inventory-card').style.display = 'block';
     }
 
     // Mode
@@ -1177,7 +1005,7 @@
       document.getElementById('mode-read-btn').classList.toggle('active', mode === 'read');
       document.getElementById('mode-update-btn').classList.toggle('active', mode === 'update');
       clearResult();
-      setStatus(mode === 'read' ? 'Read mode — scan to view item' : 'Update mode — scan to edit item');
+      setStatus(mode === 'read' ? 'Read mode — scan to view item details' : 'Update mode — scan to edit item');
     }
 
     // Method
@@ -1194,11 +1022,15 @@
       if (method === 'camera') {
         scanning = true;
         navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-          .then(function (s) { camStream = s; video.srcObject = s; video.play(); requestAnimationFrame(scanTick); setStatus('Point camera at QR code...'); })
+          .then(function (s) {
+            camStream = s; video.srcObject = s; video.play();
+            requestAnimationFrame(scanTick);
+            setStatus('Point camera at a QR code...');
+          })
           .catch(function () { setStatus('Camera not available. Use Upload Image.'); });
       } else {
         stopCam();
-        setStatus('Upload a QR image to scan');
+        setStatus(currentMode === 'read' ? 'Upload a QR image to view item' : 'Upload a QR image to edit item');
       }
     }
 
@@ -1218,7 +1050,10 @@
     }
 
     // QR image upload
-    document.getElementById('qr-upload-zone').addEventListener('click', function () { document.getElementById('qr-input').click(); });
+    document.getElementById('qr-upload-zone').addEventListener('click', function () {
+      document.getElementById('qr-input').click();
+    });
+
     document.getElementById('qr-input').addEventListener('change', function (e) {
       const file = e.target.files[0]; if (!file) return;
       setStatus('Reading QR...');
@@ -1234,7 +1069,9 @@
             setStatus('QR detected: ' + code.data);
             document.getElementById('scan-result').innerHTML = '<img src="' + ev.target.result + '" class="qr-preview"/>';
             processQR(code.data);
-          } else { setStatus('Could not read QR. Try clearer image.'); }
+          } else {
+            setStatus('❌ Could not read QR. Try a clearer image.');
+          }
         };
         img.src = ev.target.result;
       };
@@ -1245,7 +1082,7 @@
     async function processQR(qrId) {
       const res = await fetch('/item/' + qrId);
       if (!res.ok) {
-        document.getElementById('scan-result').innerHTML += '<div class="result-card"><p style="color:#dc2626;text-align:center;padding:10px">❌ Item not found: ' + qrId + '</p></div>';
+        document.getElementById('scan-result').innerHTML += '<div class="result-card"><p style="color:#dc2626;text-align:center;padding:12px">❌ Item not found in <strong>' + activeSheetName + '</strong><br><small style="color:#9ca3af">QR ID: ' + qrId + '</small></p></div>';
         addScanAgain(); return;
       }
       const item = await res.json();
@@ -1254,46 +1091,27 @@
     }
 
     function showReadCard(item) {
-      const v = item['Verification Status'];
-      const bannerClass = v === 'Verified' ? 'verified' : v === 'Pending' ? 'pending' : 'not-verified';
-      const bannerText = v === 'Verified' ? '✅ VERIFIED' : v === 'Pending' ? '⏳ PENDING' : '❌ NOT VERIFIED';
+      const v = item['Verification Status'] === 'Verified';
       const html = '<div class="result-card">'
-        + '<div class="result-banner ' + bannerClass + '">' + bannerText + '</div>'
+        + '<div class="result-banner ' + (v ? 'verified' : 'not-verified') + '">' + (v ? '✅ VERIFIED' : '❌ NOT VERIFIED') + '</div>'
         + '<div class="info-row"><span class="info-label">Item Name</span><span class="info-value">' + (item['Item Name'] || '') + '</span></div>'
         + '<div class="info-row"><span class="info-label">Serial No.</span><span class="info-value">' + (item['Serial Number'] || '') + '</span></div>'
         + '<div class="info-row"><span class="info-label">Description</span><span class="info-value">' + (item['Description'] || '') + '</span></div>'
         + '<div class="info-row"><span class="info-label">Value</span><span class="info-value">' + (item['Value'] || '') + '</span></div>'
         + '<div class="info-row"><span class="info-label">Date</span><span class="info-value">' + (item['Varied Date'] || '') + '</span></div>'
-        + '<div class="info-row"><span class="info-label">Status</span><span class="info-value"><span class="badge ' + v + '">' + v + '</span></span></div>'
-        + (item['Last Scanned'] ? '<div class="info-row"><span class="info-label">Last Scanned</span><span class="info-value">' + item['Last Scanned'] + '</span></div>' : '')
-        + (item['Scanned By'] ? '<div class="info-row"><span class="info-label">Scanned By</span><span class="info-value">' + item['Scanned By'] + '</span></div>' : '')
+        + '<div class="info-row"><span class="info-label">Status</span><span class="info-value"><span class="badge ' + item['Verification Status'] + '">' + (item['Verification Status'] || '') + '</span></span></div>'
+        + '<div class="info-row"><span class="info-label">QR ID</span><span class="info-value" style="font-size:13px;color:#6b7280">' + (item['QR Code ID'] || '') + '</span></div>'
+        + '<div class="action-row"><button class="btn-edit" id="edit-item-btn">✏️ Edit This Item</button></div>'
         + '</div>';
       document.getElementById('scan-result').innerHTML += html;
-      // Remark box for all users
-      showRemarkBox(item['QR Code ID'], item);
+      document.getElementById('edit-item-btn').addEventListener('click', function () { switchToEdit(item); });
       addScanAgain();
     }
 
-    function showRemarkBox(qrId, item) {
-      const box = document.createElement('div');
-      box.className = 'remark-box';
-      box.innerHTML = '<label>📝 Add Remark</label>'
-        + '<textarea id="remark-input" placeholder="Enter remark for this scan..."></textarea>'
-        + '<button class="btn-primary" id="submit-remark-btn" style="margin-top:8px">✅ Submit Scan</button>';
-      document.getElementById('scan-result').appendChild(box);
-      document.getElementById('submit-remark-btn').addEventListener('click', async function () {
-        const remark = document.getElementById('remark-input').value;
-        await fetch('/scan-log/' + qrId, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ remark: remark })
-        });
-        showToast('✅ Scan logged successfully!');
-        box.innerHTML = '<p style="color:#16a34a;font-size:13px;text-align:center">✅ Scan submitted!</p>';
-        if (remark) {
-          document.getElementById('scan-result').insertAdjacentHTML('beforeend',
-            '<div class="info-row" style="background:#f5f3ff;border-radius:8px;padding:8px 12px;margin-top:8px"><span class="info-label">Your Remark</span><span class="info-value">' + remark + '</span></div>');
-        }
-      });
+    function switchToEdit(item) {
+      setMode('update');
+      clearResult();
+      showEditForm(item);
     }
 
     function showEditForm(item) {
@@ -1307,7 +1125,6 @@
         + '<div class="form-group"><label>Value</label><input id="f-value" value="' + (item['Value'] || '') + '"/></div>'
         + '<div class="form-group"><label>Verification Status</label><select id="f-status">' + opts + '</select></div>'
         + '<div class="form-group"><label>Varied Date</label><input type="date" id="f-date" value="' + (item['Varied Date'] || '') + '"/></div>'
-        + '<div class="form-group"><label>Remark</label><textarea id="f-remark" placeholder="Add remark..."></textarea></div>'
         + '<button class="btn-primary" id="save-btn">💾 Save Changes</button>'
         + '</div>';
       document.getElementById('scan-result').innerHTML += html;
@@ -1321,141 +1138,20 @@
         'Description': document.getElementById('f-desc').value,
         'Value': document.getElementById('f-value').value,
         'Verification Status': document.getElementById('f-status').value,
-        'Varied Date': document.getElementById('f-date').value,
-        'remark': document.getElementById('f-remark').value
+        'Varied Date': document.getElementById('f-date').value
       };
       const res = await fetch('/item/' + qrId, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
       });
-      if (res.ok) showToast('✅ Item updated!');
-      else showToast('❌ Update failed.');
-    }
-
-    // Report
-    async function loadReport() {
-      const res = await fetch('/report');
-      const data = await res.json();
-      if (data.error) return;
-      document.getElementById('r-total').textContent = data.total;
-      document.getElementById('r-scanned').textContent = data.scanned;
-      document.getElementById('r-not-scanned').textContent = data.not_scanned;
-      document.getElementById('r-verified').textContent = data.verified;
-      document.getElementById('r-pending').textContent = data.pending;
-      document.getElementById('r-rejected').textContent = data.rejected;
-
-      // Load inventory for item names
-      const invRes = await fetch('/items');
-      const inventory = await invRes.json();
-      const invMap = {};
-      inventory.forEach(function (item) { invMap[item['QR Code ID']] = item['Item Name']; });
-
-      document.getElementById('logs-tbody').innerHTML = data.logs.map(function (log) {
-        return '<tr>'
-          + '<td style="font-size:12px;color:#6b7280">' + log.qr_id + '</td>'
-          + '<td>' + (invMap[log.qr_id] || '-') + '</td>'
-          + '<td>' + log.scanned_by + '</td>'
-          + '<td style="font-size:12px">' + log.timestamp + '</td>'
-          + '<td><span class="badge ' + log.verification_status + '">' + log.verification_status + '</span></td>'
-          + '<td style="font-size:12px">' + (log.remark || '-') + '</td>'
-          + '</tr>';
-      }).join('');
-    }
-
-    document.getElementById('download-report-btn').addEventListener('click', function () {
-      window.location.href = '/report/download';
-    });
-
-    document.getElementById('logs-toggle').addEventListener('click', function () {
-      this.classList.toggle('open');
-      document.getElementById('logs-content').classList.toggle('open');
-    });
-
-    // Team
-    async function loadUsers() {
-      const res = await fetch('/users');
-      const users = await res.json();
-      document.getElementById('users-list').innerHTML = users.map(function (u) {
-        return '<div class="user-item">'
-          + '<div class="user-avatar">' + u.username[0].toUpperCase() + '</div>'
-          + '<div style="flex:1"><div class="user-name">' + u.username + '</div>'
-          + '<div class="user-role"><span class="' + (u.role === 'head' ? 'head-badge' : 'member-badge') + '">' + u.role + '</span></div></div>'
-          + (u.role !== 'head' ? '<button class="btn-danger" data-id="' + u.id + '">Remove</button>' : '')
-          + '</div>';
-      }).join('');
-      document.querySelectorAll('.btn-danger[data-id]').forEach(function (btn) {
-        btn.addEventListener('click', async function () {
-          if (!confirm('Remove this member?')) return;
-          await fetch('/users/' + this.dataset.id, { method: 'DELETE' });
-          loadUsers();
-          showToast('✅ Member removed!');
-        });
-      });
-    }
-
-    document.getElementById('add-user-btn').addEventListener('click', async function () {
-      const username = document.getElementById('new-username').value.trim();
-      const password = document.getElementById('new-password').value.trim();
-      const role = document.getElementById('new-role').value;
-      if (!username || !password) { showToast('❌ Fill all fields'); return; }
-      const res = await fetch('/users', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, role })
-      });
-      const data = await res.json();
-      if (data.success) {
-        showToast('✅ Member added!');
-        document.getElementById('new-username').value = '';
-        document.getElementById('new-password').value = '';
-        loadUsers();
-      } else { showToast('❌ ' + data.error); }
-    });
-
-    // Excel
-    document.getElementById('excel-upload-zone').addEventListener('click', function () { document.getElementById('excel-input').click(); });
-    document.getElementById('excel-input').addEventListener('change', async function (e) {
-      const file = e.target.files[0]; if (!file) return;
-      showToast('⏳ Uploading...');
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/upload-excel', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (data.success) {
-        document.getElementById('sheet-indicator').classList.add('show');
-        document.getElementById('sheet-name').textContent = file.name;
-        document.getElementById('sheet-count').textContent = data.total_items + ' items';
-        document.getElementById('excel-upload-zone').style.display = 'none';
-        showToast('✅ ' + data.total_items + ' items loaded!');
+      if (res.ok) {
+        showToast('✅ Item updated in ' + activeSheetName + '!');
         loadTable();
-      } else { showToast('❌ ' + data.error); }
-      e.target.value = '';
-    });
-
-    document.getElementById('sheet-clear-btn').addEventListener('click', function () {
-      document.getElementById('sheet-indicator').classList.remove('show');
-      document.getElementById('excel-upload-zone').style.display = 'block';
-      document.getElementById('inventory-card').style.display = 'none';
-    });
-
-    async function loadTable() {
-      const res = await fetch('/items');
-      const items = await res.json();
-      document.getElementById('excel-tbody').innerHTML = items.map(function (item) {
-        return '<tr>'
-          + '<td>' + (item['Serial Number'] || '') + '</td>'
-          + '<td>' + (item['Item Name'] || '') + '</td>'
-          + '<td>' + (item['Value'] || '') + '</td>'
-          + '<td><span class="badge ' + item['Verification Status'] + '">' + (item['Verification Status'] || '') + '</span></td>'
-          + '<td>' + (item['Varied Date'] || '') + '</td>'
-          + '<td style="font-size:12px;color:#6b7280">' + (item['QR Code ID'] || '') + '</td>'
-          + '</tr>';
-      }).join('');
-      document.getElementById('inventory-card').style.display = 'block';
+      } else {
+        showToast('❌ Update failed.');
+      }
     }
-
-    document.getElementById('table-toggle').addEventListener('click', function () {
-      this.classList.toggle('open');
-      document.getElementById('table-content').classList.toggle('open');
-    });
 
     function addScanAgain() {
       const btn = document.createElement('button');
@@ -1465,17 +1161,19 @@
       document.getElementById('scan-result').appendChild(btn);
     }
 
-    function resetScan() { scanning = true; clearResult(); setStatus('Ready to scan'); }
+    function resetScan() {
+      scanning = true;
+      clearResult();
+      setStatus(currentMode === 'read' ? 'Ready to scan' : 'Ready to scan for update');
+    }
+
     function clearResult() { document.getElementById('scan-result').innerHTML = ''; }
     function setStatus(msg) { document.getElementById('scan-status').textContent = msg; }
+
     function showToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg; t.style.display = 'block';
       setTimeout(function () { t.style.display = 'none'; }, 3000);
-    }
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/static/sw.js').catch(function () { });
     }
   </script>
 </body>
